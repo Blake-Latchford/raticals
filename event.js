@@ -5,8 +5,11 @@ $(document).ready(function () {
     "use strict";
     $("#trials input[type='checkbox']").change(function () {
         $(this).siblings("div").children().toggle(this.checked);
-        $(this).siblings().find("input[type='numeric']").val(0);
-        console.log("chekced!");
+        var count_input = $(this).siblings().find("input[type='number']");
+        if( !count_input.val() ) {
+            count_input.val(0);
+        }
+        count_input.keyup();
     });
     
     $("#trials input[type='number']").bind("keyup mouseup", function () {
@@ -32,4 +35,7 @@ $(document).ready(function () {
     });
     
     $("#trials input[type='checkbox']").change();
+
+    $(".datepicker").datepicker();
+    $(".timepicker").timepicker();
 });
