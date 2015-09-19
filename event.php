@@ -39,32 +39,36 @@ if ($conn->connect_error) {
             $created_event_id = $conn->insert_id;
             
             $create_trial = $conn->prepare(
-                "INSERT INTO trial (class, time, event_id) VALUES (?, ?, ?)");
-            $create_trial->bind_param("ssi", $class, $time, $event_id);
-            $event_id = $created_event_id;
-            
-            $result = $conn->query("SELECT name FROM trial_class");
-            
-            if( $result->num_rows == 0 ) {
-                error_log( "Failed to retrieve trial classes." );
+                "INSERT INTO trial (trial_class_id, time, event_id) VALUES (?, ?, ?)");
+            if(!$create_trial->bind_param("isi", $class, $time, $event_id)) {
+                error_log( "Failed to bind parameters for new trial creation:$create_trial->error" );
                 $failure = true;
             } else {
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $class = $row["name"];
-                    $trial_count = intval($_POST[$class . "_count"]);
-                    for($i = 0; $i < $trial_count; $i++) {
-                        $trial_input_name = $class . "_count" . $i;
-                        if( !array_key_exists( $trial_input_name, $_POST ) ) {
-                            error_log( "Missing name trial time for class '" . $class . "'." .
-                                       " Variable '" . $trial_input_name . "' not found." );
-                            $failure = true;
-                            break;
-                        } else {
-                            $time = $_POST[$trial_input_name];
-                            if(!$create_trial->execute()) {
-                                error_log( "Failed to create trial:" . $class . " " . $time . ":" . $conn->error );
+                $event_id = $created_event_id;
+
+                $result = $conn->query("SELECT id, name FROM trial_class ORDER BY id ASC");
+
+                if( $result->num_rows == 0 ) {
+                    error_log( "Failed to retrieve trial classes." );
+                    $failure = true;
+                } else {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $class = $row["id"];
+                        $trial_count = intval($_POST[$row["name"] . "_count"]);
+                        for($i = 0; $i < $trial_count; $i++) {
+                            $trial_input_name = $row["name"] . "_count$i";
+                            if( !array_key_exists( $trial_input_name, $_POST ) ) {
+                                error_log( "Missing name trial time for class '" . $row["name"] . "'." .
+                                           " Variable '$trial_input_name' not found." );
                                 $failure = true;
                                 break;
+                            } else {
+                                $time = $_POST[$trial_input_name];
+                                if(!$create_trial->execute()) {
+                                    error_log( "Failed to create trial:" . $class . " " . $time . ":" . $conn->error );
+                                    $failure = true;
+                                    break;
+                                }
                             }
                         }
                     }

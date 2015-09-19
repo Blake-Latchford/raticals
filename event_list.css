@@ -1,0 +1,39 @@
+*
+{
+    font-family: sans-serif;
+}
+
+
+.event
+{
+    border: 1px solid #7D6430;
+    padding: 1.5em;
+    background: #FFFFFF;
+    border-radius: .3em;
+    box-shadow: .1em .1em 5px 0px rgba(0,0,0,0.75);
+    position: relative;
+}
+
+.event form
+{
+    position: absolute;
+    top: 25%;
+    right: 1em;
+}
+
+h1
+{
+    display: inline;
+    font-family: serif;
+    font-size: 2em;
+}
+
+body
+{
+    background: #B7B8BA;
+}
+
+input[type="submit"]
+{
+    font-weight: bold;
+}

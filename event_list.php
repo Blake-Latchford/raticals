@@ -1,3 +1,9 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="event_list.css">
+</head>
+<body>
+
 <?php
 $servername = "localhost";
 $username = "web";
@@ -17,26 +23,31 @@ if ($conn->connect_error) {
         error_log( "Failed to query event table:" . $conn->error );
         $failure = true;
     } else {
-        $event_string = "<div class=\"event\">";
         while( $row = $result->fetch_assoc() ) {
             $datetime = DateTime::createFromFormat( "Y-m-d H:i:s", $row["datetime"] );
             if( !$datetime ) {
                 error_log( "Failed to convert datetime '" . $row["datetime"] );
                 $failure = true;
             } else {
-                $event_string .= "<h1>" . $row["title"] . "</h1>" .
+                echo "<div class=\"event\">" .
+                    "<h1>" . $row["title"] . "</h1>" .
                     "<div>" . $datetime->format( "F jS" ) . "</div>" .
+                    "<a href=\"https://maps.google.com?daddr=" .
+                    $row["street"] . "+" . $row["city"] . "+" . $row["state"] . "+" . $row["zip"] . "\">" .
+                    $row["city"] . ", " . $row["state"] . "</a>" .
                     "<form action=\"register.php\">" .
                     "<input type=hidden name=\"event_id\" value=\"" . $row["id"] . "\" \\>" .
                     "<input type=\"submit\" value=\"Register\" \\>" .
-                    "</form>";
+                    "</form>" .
+                    "</div>";
             }
         }
-        $event_string .= "</div>";
-        echo $event_string;
     }
 }
 
 $conn->close();
-
 ?> 
+
+</body>
+</html>
+
