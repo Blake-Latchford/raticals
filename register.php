@@ -3,6 +3,8 @@
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="form.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <script src="register.js" type="text/javascript"></script>
 </head>
     
@@ -25,6 +27,18 @@ if ($conn->connect_error) {
     
 <body>
 <?php
+
+function requestToHtml( $key, $sanitize, $validate ) {
+    if( !isset( $_REQUEST[$key] ) ) {
+        return "";
+    }
+    $value = $_REQUEST[$key];
+    if( $sanitize ) {
+        
+    }
+    return htmlspecialchars( $_REQUEST[$key] );
+}
+
 if(!$failure) {
     $get_event = $conn->prepare(
         "SELECT title, street, city, state, zip, datetime FROM event WHERE id=?;");
@@ -51,8 +65,10 @@ if(!$failure) {
     $get_event->close();
 }
 ?>
-    <form>
+    <form action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?> method="post">
         <fieldset>
+            <input type="hidden" name="event_id"
+                   value="<?php echo htmlspecialchars($_REQUEST["event_id"]); ?>" />
             <h2>Trials</h2>
 <?php
 $total_trials = 0;
@@ -101,31 +117,57 @@ if( $trial_classes->num_rows == 0 ) {
 ?>
             <h2>Dog Information</h2>
             <h3>Barn Hunt Number</h3>
-            <a id="BH">BH-</a><input type="number" name="BarnHunt_Number">
+            <a id="BH">BH-</a>
+                <input type="number" name="BarnHunt_Number"
+                       <?php echo requestToHtml("BarnHunt_Number"); ?> />
+            </input>
             <h3>Dog's Call Name</h3>
-            <input type="text" name="call_name">
+            <input type="text" name="call_name"
+                   <?php echo requestToHtml("call_name"); ?> />
             <h3>Dog's Full Name</h3>
-            <input type="text" name="dog_full_name">
+            <input type="text" name="dog_full_name"
+                   <?php echo requestToHtml("dog_full_name"); ?> />
             <h3>Breed</h3>
-            <input type="text" name="breed">
+            <input type="text" name="breed"
+                   <?php echo requestToHtml("breed"); ?> />
             <h3>Height in Inches</h3>
-            <input type="text" name="height">
-            <input type="hidden" name="height_class" />
+            <input type="text" name="height"
+                   <?php echo requestToHtml("height"); ?> />
+            <input type="hidden" name="height_class"
+                   <?php echo requestToHtml("height_class"); ?>>
             <h3>Dog's Date of Birth</h3>
-            <input type="date" name="birth_date"></input>
+            <input type="date" name="birth_date" class="datepicker"
+                   <?php echo requestToHtml("birth_date"); ?> />
             <h3>Dog's Sex</h3>
-            <input type="radio" name="sex" value="male" id="sex_male"/>
+            <input type="radio" name="sex" value="male" id="sex_male"
+                   <?php if( isset($_REQUEST["sex"]) and $_REQUEST["sex"] == "male") echo "checked"; ?> />
                 <label for="sex_male">Male</label><br>
-            <input type="radio" name="sex" value="female" id="sex_female"/>
+            <input type="radio" name="sex" value="female" id="sex_female"
+                   <?php if( isset($_REQUEST["sex"]) and $_REQUEST["sex"] == "female") echo "checked"; ?> />
                 <label for="sex_female">Female</label><br>
-            <input type="checkbox" name="bitch_in_season" id="bitch_in_season" hidden/>
-                <label for="bitch_in_season" hidden>Bitch in Season</label>
+            <?php
+            $bitch_in_season = requestToHtml("bitch_in_season");
+            if( isset($_REQUEST["sex"]) and $_REQUEST["sex"] == "male") {
+                $bitch_in_season = "hidden";
+            } else if( isset( $_REQUEST["bitch_in_season"] ) and true == $_REQUEST["bitch_in_season"]){
+                $bitch_in_season = "checked";
+            } else {
+                $bitch_in_season = "";
+            }
+            ?>
+            <input type="checkbox" name="bitch_in_season" id="bitch_in_season"
+                   <?php echo $bitch_in_season; ?> />
+                <label for="bitch_in_season" <?php echo $bitch_in_season; ?>>
+                    Bitch in Season</label>
             <h2>Owner Information</h2>
             <h3>Owner's Full Name</h3>
-            <input type="text" name="owner_name"></input>
+            <input type="text" name="owner_name"
+                   value="<?php echo requestToHtml("owner_name"); ?>" />
             <h3>Email</h3>
-            <input type="email" name="email" />
+            <input type="email" name="email"
+                   value="<?php echo requestToHtml("email"); ?>" />
         </fieldset>
+        <input type="submit" value="Submit" />
     </form>
 </body>
 </html>

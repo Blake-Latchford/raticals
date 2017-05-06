@@ -20,4 +20,5 @@ $(document).ready(function () {
         $("#bitch_in_season").toggle(checked);
         $("[for='bitch_in_season']").toggle(checked);
     });
+    $(".datepicker").datepicker();
 });
