@@ -1,0 +1,136 @@
+-- MySQL dump 10.13  Distrib 5.6.25, for debian-linux-gnu (x86_64)
+--
+-- Host: localhost    Database: raticals
+-- ------------------------------------------------------
+-- Server version	5.6.25-0ubuntu0.15.04.1-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `dog`
+--
+
+DROP TABLE IF EXISTS `dog`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `dog` (
+  `id` int(6) unsigned NOT NULL AUTO_INCREMENT,
+  `barnhunt_number` int(6) unsigned NOT NULL,
+  `call_name` varchar(30) NOT NULL,
+  `full_name` varchar(30) NOT NULL,
+  `breed` varchar(30) NOT NULL,
+  `height` double NOT NULL,
+  `height_class_id` int(6) unsigned NOT NULL,
+  `bitch_in_season` bit(1) NOT NULL DEFAULT b'0',
+  `owner_id` int(6) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `height_class_id` (`height_class_id`),
+  KEY `fk_owner_id` (`owner_id`),
+  CONSTRAINT `dog_ibfk_1` FOREIGN KEY (`height_class_id`) REFERENCES `height_class` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_owner_id` FOREIGN KEY (`owner_id`) REFERENCES `owner` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `event`
+--
+
+DROP TABLE IF EXISTS `event`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `event` (
+  `id` int(6) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(30) NOT NULL,
+  `street` varchar(30) NOT NULL,
+  `city` varchar(30) NOT NULL,
+  `state` varchar(30) NOT NULL,
+  `zip` varchar(6) NOT NULL,
+  `datetime` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `height_class`
+--
+
+DROP TABLE IF EXISTS `height_class`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `height_class` (
+  `id` int(6) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL,
+  `min` double NOT NULL,
+  `max` double NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `owner`
+--
+
+DROP TABLE IF EXISTS `owner`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `owner` (
+  `id` int(6) unsigned NOT NULL AUTO_INCREMENT,
+  `full_name` varchar(30) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `trial`
+--
+
+DROP TABLE IF EXISTS `trial`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `trial` (
+  `id` int(6) unsigned NOT NULL AUTO_INCREMENT,
+  `time` varchar(30) NOT NULL,
+  `event_id` int(6) unsigned NOT NULL,
+  `trial_class_id` int(6) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `trial_ibfk_1` (`event_id`),
+  KEY `fk_trial_class_id` (`trial_class_id`),
+  CONSTRAINT `fk_trial_class_id` FOREIGN KEY (`trial_class_id`) REFERENCES `trial_class` (`id`),
+  CONSTRAINT `trial_ibfk_1` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `trial_class`
+--
+
+DROP TABLE IF EXISTS `trial_class`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `trial_class` (
+  `id` int(6) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2017-05-06 21:20:14
