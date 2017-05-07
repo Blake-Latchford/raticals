@@ -28,13 +28,16 @@ if ($conn->connect_error) {
 <body>
 <?php
 
+$sanitize = [
+    "event_id"
+];
 function requestToHtml( $key, $sanitize, $validate ) {
     if( !isset( $_REQUEST[$key] ) ) {
         return "";
     }
     $value = $_REQUEST[$key];
     if( $sanitize ) {
-        
+        $value = filter
     }
     return htmlspecialchars( $_REQUEST[$key] );
 }
